@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Notes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .notes-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+        }
+
+        .notes-header {
+            background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 20px 30px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .notes-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #ffdc00 0%, #ff9500 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 149, 0, 0.3);
+        }
+
+        .notes-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1d1d1f;
+            letter-spacing: -0.5px;
+        }
+
+        .notes-content {
+            padding: 30px;
+        }
+
+        .note-item {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.08),
+                0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .note-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #007AFF 0%, #5856D6 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .note-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 30px rgba(0, 0, 0, 0.12),
+                0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .note-item:hover::before {
+            opacity: 1;
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .note-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1d1d1f;
+            line-height: 1.4;
+            letter-spacing: -0.3px;
+        }
+
+        .note-date {
+            font-size: 13px;
+            color: #8e8e93;
+            font-weight: 500;
+            white-space: nowrap;
+            margin-left: 16px;
+        }
+
+        .note-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #3a3a3c;
+            margin-bottom: 12px;
+        }
+
+        .note-text a {
+            color: #007AFF;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .note-text a:hover {
+            color: #0051D5;
+            text-decoration: underline;
+        }
+
+        .note-text strong {
+            color: #1d1d1f;
+            font-weight: 600;
+        }
+
+        .note-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .note-tag {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f2ff 100%);
+            color: #007AFF;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid rgba(0, 122, 255, 0.1);
+        }
+
+        .add-note-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 
+                0 8px 24px rgba(0, 122, 255, 0.4),
+                0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add-note-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 
+                0 12px 32px rgba(0, 122, 255, 0.5),
+                0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .add-note-btn:active {
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .notes-container {
+                border-radius: 16px;
+            }
+
+            .notes-header {
+                padding: 16px 20px;
+            }
+
+            .notes-content {
+                padding: 20px;
+            }
+
+            .note-item {
+                padding: 16px;
+                margin-bottom: 12px;
+            }
+
+            .note-title {
+                font-size: 16px;
+            }
+
+            .note-text {
+                font-size: 15px;
+            }
+
+            .add-note-btn {
+                width: 56px;
+                height: 56px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="notes-container">
+        <div class="notes-header">
+            <div class="notes-icon">📝</div>
+            <div class="notes-title">Bubble Babble</div>
+        </div>
+        
+        <div class="notes-content">
+            <div class="note-item">
+                <div class="note-header">
+                    <div class="note-title">Credits / Attributions</div>
+                    <div class="note-date">Nov 6 2025</div>
+                </div>
+                <div class="note-text">
+                    <strong>Emojis:</strong> All emojis designed by <a href="https://openmoji.org/" target="_blank">OpenMoji</a> – the open-source emoji and icon project. License: CC BY-SA 4.0<br><br>
+                    
+                    <strong>Sounds:</strong> Provided by <a href="https://mixkit.co/" target="_blank">Mixkit</a> and <a href="https://elements.envato.com/" target="_blank">Envato Elements</a><br><br>
+                    
+                    <strong>Animations:</strong> Some animations used in this app are provided by <a href="https://lottiefiles.com/" target="_blank">LottieFiles</a><br><br>
+                    
+                    <strong>Icons:</strong> Icons by SEFEICN, The Icon Z, AzizGdt, Icon Master, Shariful Islam, Iconsphere, EX Liberus, Bucky Clarke, Droplet, Feri_icon, Тимур Минвалеев from <a href="https://thenounproject.com/" target="_blank">Noun Project</a>
+                </div>
+                <div class="note-tags">
+                    <!-- <span class="note-tag">Credits</span>
+                    <span class="note-tag">Attribution</span>
+                    <span class="note-tag">Legal</span> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="add-note-btn">+</button>
+
+    <script>
+        document.querySelector('.add-note-btn').addEventListener('click', function() {
+            alert('Add new note functionality would go here!');
+        });
+
+        // Add some interactivity
+        document.querySelectorAll('.note-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('note-tag')) {
+                    console.log('Note clicked:', this.querySelector('.note-title').textContent);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
