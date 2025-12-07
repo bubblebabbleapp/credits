@@ -284,21 +284,6 @@
         </div>
     </div>
 
-    <button class="add-note-btn">+</button>
-
-    <script>
-        document.querySelector('.add-note-btn').addEventListener('click', function() {
-            alert('Add new note functionality would go here!');
-        });
-
-        // Add some interactivity
-        document.querySelectorAll('.note-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                if (!e.target.classList.contains('note-tag')) {
-                    console.log('Note clicked:', this.querySelector('.note-title').textContent);
-                }
-            });
-        });
-    </script>
 </body>
+
 </html>
